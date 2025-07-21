@@ -1,0 +1,36 @@
+﻿<Window x:Class="BasketballSim.Views.TeamView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Team Roster" Height="600" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*" />
+            <!-- Top 1/3 -->
+            <RowDefinition Height="2*" />
+            <!-- Bottom 2/3 -->
+        </Grid.RowDefinitions>
+
+        <!-- Top: Selected Player Summary -->
+        <Border Grid.Row="0" Background="#FFEFEFEF" Padding="20">
+            <StackPanel>
+                <TextBlock x:Name="TeamNameText" FontSize="24" FontWeight="Bold" />
+                <TextBlock x:Name="SelectedPlayerText" FontSize="18" Margin="0,10,0,0"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Bottom: Player List + Navigation -->
+        <DockPanel Grid.Row="1" Margin="10">
+            <!-- Left Button -->
+            <Button Content="⟵" Width="50" DockPanel.Dock="Left" Click="PreviousTeam_Click"/>
+
+            <!-- Player List -->
+            <ListBox x:Name="PlayerListBox" DisplayMemberPath="Overall"
+                     SelectionChanged="PlayerListBox_SelectionChanged"
+                     Margin="10,0"
+                     />
+
+            <!-- Right Button -->
+            <Button Content="⟶" Width="50" DockPanel.Dock="Right" Click="NextTeam_Click"/>
+        </DockPanel>
+    </Grid>
+</Window>
