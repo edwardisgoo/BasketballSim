@@ -13,6 +13,7 @@ namespace BasketballSim.Views
         public TeamView()
         {
             InitializeComponent();
+            Keyboard.Focus(this);
             this.KeyDown += TeamView_KeyDown;
             LoadTeam();
         }
@@ -59,6 +60,16 @@ namespace BasketballSim.Views
                 {
                     Application.Current.Shutdown();
                 }
+            }
+            else if (e.Key == Key.Right)
+            {
+                FranchiseContext.NextTeam();
+                LoadTeam();
+            }
+            else if (e.Key == Key.Left)
+            {
+                FranchiseContext.PreviousTeam();
+                LoadTeam();
             }
         }
     }

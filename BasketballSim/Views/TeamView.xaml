@@ -21,19 +21,11 @@
             </StackPanel>
         </Border>
 
-        <!-- Bottom: Player List + Navigation -->
+        <!-- Bottom: Player List -->
         <DockPanel Grid.Row="1" Margin="10">
-            <!-- Left Button -->
-            <Button Content="⟵" Width="50" DockPanel.Dock="Left" Click="PreviousTeam_Click"/>
-
-            <!-- Player List -->
             <ListBox x:Name="PlayerListBox" DisplayMemberPath="Overall"
                      SelectionChanged="PlayerListBox_SelectionChanged"
-                     Margin="10,0"
-                     />
-
-            <!-- Right Button -->
-            <Button Content="⟶" Width="50" DockPanel.Dock="Right" Click="NextTeam_Click"/>
+                     Margin="0" />
         </DockPanel>
     </Grid>
 </Window>
