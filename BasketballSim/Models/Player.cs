@@ -2,12 +2,21 @@
 {
     public class Player
     {
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Nationality { get; set; }
         public int Overall { get; set; }
 
-        public Player(int overall)
+        public string FullName => $"{FirstName} {LastName}";
+
+        public Player(string firstName, string lastName, string nationality, int overall)
         {
+            FirstName = firstName;
+            LastName = lastName;
+            Nationality = nationality;
             Overall = overall;
         }
     }
+
 }
 
