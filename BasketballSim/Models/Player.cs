@@ -8,6 +8,7 @@
         public int Overall { get; set; }
 
         public string FullName => $"{FirstName} {LastName}";
+        public string ShortName => $"{FirstName[0]}. {LastName}";
 
         public Player(string firstName, string lastName, string nationality, int overall)
         {

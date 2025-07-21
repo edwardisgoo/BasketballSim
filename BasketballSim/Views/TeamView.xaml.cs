@@ -28,6 +28,11 @@ namespace BasketballSim.Views
             PlayerListBox.ItemsSource = sortedPlayers;
             PlayerListBox.SelectedIndex = 0; // Default to best player
             PlayerListBox.Focus();
+            var first = sortedPlayers.FirstOrDefault();
+            if (first != null)
+            {
+                SelectedPlayerText.Text = $"{first.FullName} - {first.Nationality} | Overall: {first.Overall}";
+            }
         }
 
         private void PlayerListBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
@@ -35,7 +40,7 @@ namespace BasketballSim.Views
             var selected = PlayerListBox.SelectedItem as Player;
             if (selected != null)
             {
-                SelectedPlayerText.Text = $"Overall: {selected.Overall}";
+                SelectedPlayerText.Text = $"{selected.FullName} - {selected.Nationality} | Overall: {selected.Overall}";
             }
         }
 

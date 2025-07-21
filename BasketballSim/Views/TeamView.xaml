@@ -23,7 +23,7 @@
 
         <!-- Bottom: Player List -->
         <DockPanel Grid.Row="1" Margin="10">
-            <ListBox x:Name="PlayerListBox" DisplayMemberPath="Overall"
+            <ListBox x:Name="PlayerListBox" DisplayMemberPath="ShortName"
                      SelectionChanged="PlayerListBox_SelectionChanged"
                      Margin="0" />
         </DockPanel>
