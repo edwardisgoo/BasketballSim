@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Windows;
+using System.Windows.Input;
 using BasketballSim.Models;
 using BasketballSim.Logic;
 
@@ -10,6 +11,7 @@ namespace BasketballSim
         public MainWindow()
         {
             InitializeComponent();
+            this.KeyDown += MainWindow_KeyDown;
         }
 
         private void StartFranchise_Click(object sender, RoutedEventArgs e)
@@ -26,6 +28,18 @@ namespace BasketballSim
             teamView.Show();
 
             this.Close(); // Close the main menu
+        }
+
+        private void MainWindow_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+            {
+                var result = MessageBox.Show("Exit?", "Confirm", MessageBoxButton.YesNo);
+                if (result == MessageBoxResult.Yes)
+                {
+                    Application.Current.Shutdown();
+                }
+            }
         }
     }
 }

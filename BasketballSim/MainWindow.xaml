@@ -5,7 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BasketballSim"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        WindowStyle="None"
+        WindowState="Maximized"
+        ResizeMode="NoResize"
+        Title="MainWindow">
     <Grid>
         <Button Content="Start Franchise"
             Width="200"

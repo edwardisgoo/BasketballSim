@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Input;
 using System.Linq;
 using BasketballSim.Logic;
 using BasketballSim.Models;
@@ -12,6 +13,7 @@ namespace BasketballSim.Views
         public TeamView()
         {
             InitializeComponent();
+            this.KeyDown += TeamView_KeyDown;
             LoadTeam();
         }
 
@@ -46,6 +48,18 @@ namespace BasketballSim.Views
         {
             FranchiseContext.PreviousTeam();
             LoadTeam();
+        }
+
+        private void TeamView_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+            {
+                var result = MessageBox.Show("Exit?", "Confirm", MessageBoxButton.YesNo);
+                if (result == MessageBoxResult.Yes)
+                {
+                    Application.Current.Shutdown();
+                }
+            }
         }
     }
 }
