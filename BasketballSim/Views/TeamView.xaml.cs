@@ -13,8 +13,7 @@ namespace BasketballSim.Views
         public TeamView()
         {
             InitializeComponent();
-            Keyboard.Focus(this);
-            this.KeyDown += TeamView_KeyDown;
+            this.PreviewKeyDown += TeamView_KeyDown;
             LoadTeam();
         }
 
@@ -28,6 +27,7 @@ namespace BasketballSim.Views
             var sortedPlayers = currentTeam.Players.OrderByDescending(p => p.Overall).ToList();
             PlayerListBox.ItemsSource = sortedPlayers;
             PlayerListBox.SelectedIndex = 0; // Default to best player
+            PlayerListBox.Focus();
         }
 
         private void PlayerListBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
