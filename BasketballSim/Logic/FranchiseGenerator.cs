@@ -42,6 +42,11 @@ namespace BasketballSim.Logic
             return teams;
         }
 
+        public static List<Player> GeneratePlayersPool(int count)
+        {
+            return GeneratePlayers(count);
+        }
+
         private static CountryNamePool PickCountry(List<CountryNamePool> countries, int totalWeight)
         {
             int roll = rng.Next(totalWeight);
@@ -55,9 +60,47 @@ namespace BasketballSim.Logic
             return countries[0];
         }
 
-        private static int GenerateOverall()
+        private static double BaseRatingByAge(int age)
         {
-            double mean = 75;
+            if (age < 20) return 60 + (age - 18) * 2;  // 60–64
+            if (age <= 22) return 65 + (age - 20) * 3; // 65–71
+            if (age <= 27) return 71 + (age - 23) * 2.5; // 71–81
+            if (age <= 30) return 82 - (age - 28) * 1.5; // 82–79
+            if (age <= 33) return 78 - (age - 31) * 2; // 78–74
+            if (age <= 37) return 72 - (age - 34) * 2.5; // 72–64
+            return 60; // past 38
+        }
+
+        private static int GenerateOverall(int age)
+        {
+            double baseValue = BaseRatingByAge(age);
+
+            // Chaos factor: lower for middle-aged players, higher for young/old
+            double chaos = age is >= 24 and <= 30 ? 3 : 6;
+
+            // Normal distribution wiggle
+            double u1 = 1.0 - rng.NextDouble();
+            double u2 = 1.0 - rng.NextDouble();
+            double randStdNormal = Math.Sqrt(-2.0 * Math.Log(u1)) *
+                                   Math.Sin(2.0 * Math.PI * u2);
+
+            double raw = baseValue + chaos * randStdNormal;
+
+            // Clamp to league rules
+            int overall = (int)Math.Round(Math.Clamp(raw, 55, 95));
+
+            // Chance for rare phenoms or ironmen
+            if (rng.NextDouble() < 0.01 && age <= 22) // 1% chance for prodigy
+                overall = rng.Next(82, 90);
+            else if (rng.NextDouble() < 0.01 && age >= 34) // 1% for durability freak
+                overall = rng.Next(82, 90);
+
+            return overall;
+        }
+
+        private static int GenerateAge()
+        {
+            double mean = 26;
             double stdDev = 8;
 
             // Box-Muller transform
@@ -68,25 +111,7 @@ namespace BasketballSim.Logic
 
             double rawValue = mean + stdDev * randStdNormal;
 
-            // Clamp between 55 and 95
-            int overall = (int)Math.Round(Math.Clamp(rawValue, 55, 95));
-            return overall;
-        }
-
-        private static int GenerateAge()
-        {
-            double mean = 26;
-            double stdDev = 6;
-
-            // Box-Muller transform
-            double u1 = 1.0 - rng.NextDouble(); // avoid 0
-            double u2 = 1.0 - rng.NextDouble();
-            double randStdNormal = Math.Sqrt(-2.0 * Math.Log(u1)) *
-                                   Math.Sin(2.0 * Math.PI * u2);
-
-            double rawValue = mean + stdDev * randStdNormal;
-
-            // Clamp between 55 and 95
+            // Clamp between 18 and 40
             int age = (int)Math.Round(Math.Clamp(rawValue, 18, 40));
             return age;
         }
@@ -102,8 +127,8 @@ namespace BasketballSim.Logic
                 var country = PickCountry(pool.countries, weightSum);
                 var first = country.firstNames[rng.Next(country.firstNames.Count)];
                 var last = country.lastNames[rng.Next(country.lastNames.Count)];
-                int overall = GenerateOverall();
                 int age = GenerateAge();
+                int overall = GenerateOverall(age);
                 players.Add(new Player(first, last, country.name, overall, age));
             }
             return players;
