@@ -11,11 +11,14 @@ namespace BasketballSim.Logic
     /// </summary>
     public class DraftManager
     {
+        public event EventHandler? DraftCompleted;
         private readonly List<Player> availablePlayers;
         private readonly List<List<Player>> teamRosters = new();
         private int currentPick;
         private int currentTeamIndex;
         private int direction = 1; // 1 for forward, -1 for reverse
+
+        public bool IsDraftComplete => availablePlayers.Count == 0;
 
         public DraftManager(IEnumerable<Player> players)
         {
@@ -48,6 +51,16 @@ namespace BasketballSim.Logic
             return teamRosters[teamIndex];
         }
 
+        public List<Team> GetTeams()
+        {
+            var teams = new List<Team>();
+            for (int i = 0; i < teamRosters.Count; i++)
+            {
+                teams.Add(new Team($"Team {i + 1}", teamRosters[i].ToList()));
+            }
+            return teams;
+        }
+
         public void PickPlayer(Player player)
         {
             if (player == null) throw new ArgumentNullException(nameof(player));
@@ -55,7 +68,14 @@ namespace BasketballSim.Logic
                 throw new InvalidOperationException("Player not in available pool");
 
             teamRosters[currentTeamIndex].Add(player);
-            AdvancePick();
+            if (availablePlayers.Count == 0)
+            {
+                DraftCompleted?.Invoke(this, EventArgs.Empty);
+            }
+            else
+            {
+                AdvancePick();
+            }
         }
 
         /// <summary>
