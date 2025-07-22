@@ -10,16 +10,20 @@ namespace BasketballSim.Views
     {
         private Team currentTeam;
 
-        public TeamView()
+        public TeamView() : this(FranchiseContext.GetCurrentTeam())
+        {
+        }
+
+        public TeamView(Team team)
         {
             InitializeComponent();
             this.PreviewKeyDown += TeamView_KeyDown;
-            LoadTeam();
+            LoadTeam(team);
         }
 
-        private void LoadTeam()
+        private void LoadTeam(Team team)
         {
-            currentTeam = FranchiseContext.GetCurrentTeam();
+            currentTeam = team;
             if (currentTeam == null) return;
 
             TeamNameText.Text = currentTeam.Name;
@@ -47,13 +51,13 @@ namespace BasketballSim.Views
         private void NextTeam_Click(object sender, RoutedEventArgs e)
         {
             FranchiseContext.NextTeam();
-            LoadTeam();
+            LoadTeam(FranchiseContext.GetCurrentTeam());
         }
 
         private void PreviousTeam_Click(object sender, RoutedEventArgs e)
         {
             FranchiseContext.PreviousTeam();
-            LoadTeam();
+            LoadTeam(FranchiseContext.GetCurrentTeam());
         }
 
         private void TeamView_KeyDown(object sender, KeyEventArgs e)
@@ -69,13 +73,18 @@ namespace BasketballSim.Views
             else if (e.Key == Key.Right)
             {
                 FranchiseContext.NextTeam();
-                LoadTeam();
+                LoadTeam(FranchiseContext.GetCurrentTeam());
             }
             else if (e.Key == Key.Left)
             {
                 FranchiseContext.PreviousTeam();
-                LoadTeam();
+                LoadTeam(FranchiseContext.GetCurrentTeam());
             }
+        }
+
+        private void BackToDraft_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
         }
     }
 }

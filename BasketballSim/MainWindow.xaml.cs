@@ -23,9 +23,14 @@ namespace BasketballSim
             FranchiseContext.CurrentLeague = league;
             FranchiseContext.CurrentTeamIndex = 0;
 
-            // Navigate to team view
-            var teamView = new Views.TeamView(); // We'll create this next
-            teamView.Show();
+            // Create a draft pool and draft manager
+            var pool = FranchiseGenerator.GeneratePlayersPool(450);
+            var draftManager = new DraftManager(pool);
+            FranchiseContext.CurrentDraft = draftManager;
+
+            // Navigate to draft view
+            var draftView = new Views.DraftView(draftManager);
+            draftView.Show();
 
             this.Close(); // Close the main menu
         }

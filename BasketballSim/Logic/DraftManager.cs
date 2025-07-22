@@ -30,6 +30,17 @@ namespace BasketballSim.Logic
         public int CurrentPickNumber => currentPick + 1;
         public int CurrentTeamIndex => currentTeamIndex;
 
+        /// <summary>
+        /// Gets the roster of the team currently on the clock.
+        /// </summary>
+        public IReadOnlyList<Player> CurrentTeamRoster => teamRosters[currentTeamIndex];
+
+        /// <summary>
+        /// Convenience property returning a <see cref="Team"/> instance for the
+        /// team currently drafting.
+        /// </summary>
+        public Team CurrentTeam => new Team($"Team {currentTeamIndex + 1}", teamRosters[currentTeamIndex]);
+
         public IReadOnlyList<Player> GetTeamRoster(int teamIndex)
         {
             if (teamIndex < 0 || teamIndex >= teamRosters.Count)

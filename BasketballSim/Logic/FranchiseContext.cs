@@ -7,6 +7,7 @@ namespace BasketballSim.Logic
     {
         public static List<Team> CurrentLeague { get; set; }
         public static int CurrentTeamIndex { get; set; }
+        public static DraftManager? CurrentDraft { get; set; }
 
         public static Team GetCurrentTeam()
         {

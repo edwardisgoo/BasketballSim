@@ -23,6 +23,8 @@
 
         <!-- Bottom: Player List -->
         <DockPanel Grid.Row="1" Margin="10">
+            <Button Content="Back to Draft" DockPanel.Dock="Bottom" Margin="0,10,0,0"
+                    Click="BackToDraft_Click" Width="150" Height="30"/>
             <ListBox x:Name="PlayerListBox" DisplayMemberPath="ShortName"
                      SelectionChanged="PlayerListBox_SelectionChanged"
                      Margin="0" />
