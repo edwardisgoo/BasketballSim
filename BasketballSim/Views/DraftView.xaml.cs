@@ -66,5 +66,15 @@ namespace BasketballSim.Views
             var teamView = new TeamView(draftManager.CurrentTeam);
             teamView.Show();
         }
+
+        private void DraftPlayerButton_Click(object sender, RoutedEventArgs e)
+        {
+            var player = AvailablePlayersListBox.SelectedItem as Player;
+            if (player != null)
+            {
+                draftManager.PickPlayer(player);
+                LoadPlayers();
+            }
+        }
     }
 }
