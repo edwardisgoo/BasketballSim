@@ -16,8 +16,8 @@ namespace BasketballSim
 
         private void StartFranchise_Click(object sender, RoutedEventArgs e)
         {
-            // Generate the league
-            List<Team> league = FranchiseGenerator.GenerateLeague();
+            // Generate the league with empty rosters for the draft
+            List<Team> league = FranchiseGenerator.GenerateLeague(withPlayers: false);
 
             // Store it globally for now
             FranchiseContext.CurrentLeague = league;

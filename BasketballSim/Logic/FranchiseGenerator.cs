@@ -29,13 +29,13 @@ namespace BasketballSim.Logic
             return cachedPool;
         }
 
-        public static List<Team> GenerateLeague()
+        public static List<Team> GenerateLeague(bool withPlayers = true)
         {
             var teams = new List<Team>();
             for (int i = 1; i <= 30; i++)
             {
                 string teamName = $"Team {i}";
-                var players = GeneratePlayers(15);
+                var players = withPlayers ? GeneratePlayers(15) : new List<Player>();
                 var team = new Team(teamName, players);
                 teams.Add(team);
             }
