@@ -55,6 +55,42 @@ namespace BasketballSim.Logic
             return countries[0];
         }
 
+        private static int GenerateOverall()
+        {
+            double mean = 75;
+            double stdDev = 8;
+
+            // Box-Muller transform
+            double u1 = 1.0 - rng.NextDouble(); // avoid 0
+            double u2 = 1.0 - rng.NextDouble();
+            double randStdNormal = Math.Sqrt(-2.0 * Math.Log(u1)) *
+                                   Math.Sin(2.0 * Math.PI * u2);
+
+            double rawValue = mean + stdDev * randStdNormal;
+
+            // Clamp between 55 and 95
+            int overall = (int)Math.Round(Math.Clamp(rawValue, 55, 95));
+            return overall;
+        }
+
+        private static int GenerateAge()
+        {
+            double mean = 26;
+            double stdDev = 6;
+
+            // Box-Muller transform
+            double u1 = 1.0 - rng.NextDouble(); // avoid 0
+            double u2 = 1.0 - rng.NextDouble();
+            double randStdNormal = Math.Sqrt(-2.0 * Math.Log(u1)) *
+                                   Math.Sin(2.0 * Math.PI * u2);
+
+            double rawValue = mean + stdDev * randStdNormal;
+
+            // Clamp between 55 and 95
+            int age = (int)Math.Round(Math.Clamp(rawValue, 18, 40));
+            return age;
+        }
+
         private static List<Player> GeneratePlayers(int count)
         {
             var players = new List<Player>();
@@ -66,8 +102,9 @@ namespace BasketballSim.Logic
                 var country = PickCountry(pool.countries, weightSum);
                 var first = country.firstNames[rng.Next(country.firstNames.Count)];
                 var last = country.lastNames[rng.Next(country.lastNames.Count)];
-                int overall = rng.Next(60, 100); // Overalls between 60–99
-                players.Add(new Player(first, last, country.name, overall));
+                int overall = GenerateOverall();
+                int age = GenerateAge();
+                players.Add(new Player(first, last, country.name, overall, age));
             }
             return players;
         }
