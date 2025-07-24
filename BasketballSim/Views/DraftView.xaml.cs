@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Windows;
+using System.Collections.Generic;
 using BasketballSim.Logic;
 using BasketballSim.Models;
 
@@ -8,6 +9,9 @@ namespace BasketballSim.Views
     public partial class DraftView : Window
     {
         private readonly DraftManager draftManager;
+        private List<Player> players = new();
+        private string sortColumn = "Overall";
+        private bool sortAscending = false; // default overall descending
 
         public DraftView(DraftManager draftManager)
         {
@@ -19,17 +23,39 @@ namespace BasketballSim.Views
 
         private void LoadPlayers()
         {
-            var sorted = draftManager.AvailablePlayers
-                .OrderByDescending(p => p.Overall)
-                .ToList();
-            AvailablePlayersListBox.ItemsSource = sorted;
-            AvailablePlayersListBox.SelectedIndex = 0;
-            if (sorted.Count > 0)
-            {
-                SelectedPlayerText.Text = FormatPlayer(sorted[0]);
-            }
+            players = draftManager.AvailablePlayers.ToList();
+            ApplySorting();
             UpdatePickInfo();
-            AvailablePlayersListBox.Focus();
+            AvailablePlayersListView.Focus();
+        }
+
+        private void ApplySorting()
+        {
+            IEnumerable<Player> sorted;
+            if (sortColumn == "Name")
+            {
+                sorted = sortAscending
+                    ? players.OrderBy(p => p.ShortName)
+                    : players.OrderByDescending(p => p.ShortName);
+            }
+            else if (sortColumn == "Position")
+            {
+                string[] order = { "PG", "SG", "SF", "PF", "C" };
+                sorted = sortAscending
+                    ? players.OrderBy(p => System.Array.IndexOf(order, p.Position)).ThenByDescending(p => p.Overall)
+                    : players.OrderByDescending(p => System.Array.IndexOf(order, p.Position)).ThenByDescending(p => p.Overall);
+            }
+            else // Overall
+            {
+                sorted = sortAscending
+                    ? players.OrderBy(p => p.Overall)
+                    : players.OrderByDescending(p => p.Overall);
+            }
+
+            var list = sorted.ToList();
+            AvailablePlayersListView.ItemsSource = list;
+            if (list.Count > 0)
+                AvailablePlayersListView.SelectedIndex = 0;
         }
 
         private static string FormatPlayer(Player player)
@@ -42,12 +68,36 @@ namespace BasketballSim.Views
             PickInfoText.Text = $"Pick {draftManager.CurrentPickNumber} - Team {draftManager.CurrentTeamIndex + 1}";
         }
 
-        private void AvailablePlayersListBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private void AvailablePlayersListView_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            var player = AvailablePlayersListBox.SelectedItem as Player;
+            var player = AvailablePlayersListView.SelectedItem as Player;
             if (player != null)
             {
                 SelectedPlayerText.Text = FormatPlayer(player);
+            }
+        }
+
+        private void AvailablePlayersHeader_Click(object sender, RoutedEventArgs e)
+        {
+            if (e.OriginalSource is System.Windows.Controls.GridViewColumnHeader header && header.Column != null)
+            {
+                string column = header.Column.Header.ToString() ?? string.Empty;
+                column = column switch
+                {
+                    "Name" => "Name",
+                    "Pos" => "Position",
+                    "Ovr" => "Overall",
+                    _ => sortColumn
+                };
+
+                if (sortColumn == column)
+                    sortAscending = !sortAscending;
+                else
+                {
+                    sortColumn = column;
+                    sortAscending = true;
+                }
+                ApplySorting();
             }
         }
 
@@ -66,7 +116,7 @@ namespace BasketballSim.Views
 
         private void DraftPlayerButton_Click(object sender, RoutedEventArgs e)
         {
-            var player = AvailablePlayersListBox.SelectedItem as Player;
+            var player = AvailablePlayersListView.SelectedItem as Player;
             if (player != null)
             {
                 draftManager.PickPlayer(player);

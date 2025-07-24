@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Input;
 using System.Linq;
+using System.Collections.Generic;
 using BasketballSim.Logic;
 using BasketballSim.Models;
 
@@ -9,6 +10,9 @@ namespace BasketballSim.Views
     public partial class TeamView : Window
     {
         private Team currentTeam;
+        private List<Player> players = new();
+        private string sortColumn = "Overall";
+        private bool sortAscending = false;
 
         public TeamView() : this(FranchiseContext.GetCurrentTeam())
         {
@@ -21,6 +25,35 @@ namespace BasketballSim.Views
             LoadTeam(team);
         }
 
+        private void ApplySorting()
+        {
+            IEnumerable<Player> sorted;
+            if (sortColumn == "Name")
+            {
+                sorted = sortAscending
+                    ? players.OrderBy(p => p.ShortName)
+                    : players.OrderByDescending(p => p.ShortName);
+            }
+            else if (sortColumn == "Position")
+            {
+                string[] order = { "PG", "SG", "SF", "PF", "C" };
+                sorted = sortAscending
+                    ? players.OrderBy(p => System.Array.IndexOf(order, p.Position)).ThenByDescending(p => p.Overall)
+                    : players.OrderByDescending(p => System.Array.IndexOf(order, p.Position)).ThenByDescending(p => p.Overall);
+            }
+            else // Overall
+            {
+                sorted = sortAscending
+                    ? players.OrderBy(p => p.Overall)
+                    : players.OrderByDescending(p => p.Overall);
+            }
+
+            var list = sorted.ToList();
+            PlayerListView.ItemsSource = list;
+            if (list.Count > 0)
+                PlayerListView.SelectedIndex = 0;
+        }
+
         private void LoadTeam(Team team)
         {
             currentTeam = team;
@@ -28,23 +61,46 @@ namespace BasketballSim.Views
 
             TeamNameText.Text = currentTeam.Name;
 
-            var sortedPlayers = currentTeam.Players.OrderByDescending(p => p.Overall).ToList();
-            PlayerListBox.ItemsSource = sortedPlayers;
-            PlayerListBox.SelectedIndex = 0; // Default to best player
-            PlayerListBox.Focus();
-            var first = sortedPlayers.FirstOrDefault();
+            players = currentTeam.Players.ToList();
+            ApplySorting();
+            PlayerListView.Focus();
+            var first = players.FirstOrDefault();
             if (first != null)
             {
                 SelectedPlayerText.Text = $"{first.FullName} - {first.Nationality} | Age: {first.Age} | Pos: {first.Position} | Overall: {first.Overall}";
             }
         }
 
-        private void PlayerListBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private void PlayerListView_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            var selected = PlayerListBox.SelectedItem as Player;
+            var selected = PlayerListView.SelectedItem as Player;
             if (selected != null)
             {
                 SelectedPlayerText.Text = $"{selected.FullName} - {selected.Nationality} | Age: {selected.Age} | Pos: {selected.Position} | Overall: {selected.Overall}";
+            }
+        }
+
+        private void PlayerHeader_Click(object sender, RoutedEventArgs e)
+        {
+            if (e.OriginalSource is System.Windows.Controls.GridViewColumnHeader header && header.Column != null)
+            {
+                string column = header.Column.Header.ToString() ?? string.Empty;
+                column = column switch
+                {
+                    "Name" => "Name",
+                    "Pos" => "Position",
+                    "Ovr" => "Overall",
+                    _ => sortColumn
+                };
+
+                if (sortColumn == column)
+                    sortAscending = !sortAscending;
+                else
+                {
+                    sortColumn = column;
+                    sortAscending = true;
+                }
+                ApplySorting();
             }
         }
 
