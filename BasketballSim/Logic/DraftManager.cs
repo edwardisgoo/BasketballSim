@@ -90,8 +90,7 @@ namespace BasketballSim.Logic
                 direction = -1;
             else if (currentTeamIndex == 0 && direction == -1)
                 direction = 1;
-
-            currentTeamIndex += direction;
+            else currentTeamIndex += direction;
         }
     }
 }
