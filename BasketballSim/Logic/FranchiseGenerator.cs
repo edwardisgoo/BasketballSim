@@ -44,7 +44,14 @@ namespace BasketballSim.Logic
 
         public static List<Player> GeneratePlayersPool(int count)
         {
-            return GeneratePlayers(count);
+            var positions = new[] { "PG", "SG", "SF", "PF", "C" };
+            int perPos = count / positions.Length;
+            var players = new List<Player>();
+            foreach (var pos in positions)
+            {
+                players.AddRange(GeneratePlayers(perPos, pos));
+            }
+            return players;
         }
 
         private static CountryNamePool PickCountry(List<CountryNamePool> countries, int totalWeight)
@@ -116,7 +123,7 @@ namespace BasketballSim.Logic
             return age;
         }
 
-        private static List<Player> GeneratePlayers(int count)
+        private static List<Player> GeneratePlayers(int count, string? position = null)
         {
             var players = new List<Player>();
             var pool = LoadNamePool();
@@ -129,9 +136,16 @@ namespace BasketballSim.Logic
                 var last = country.lastNames[rng.Next(country.lastNames.Count)];
                 int age = GenerateAge();
                 int overall = GenerateOverall(age);
-                players.Add(new Player(first, last, country.name, overall, age));
+                var pos = position ?? GetRandomPosition();
+                players.Add(new Player(first, last, country.name, overall, age, pos));
             }
             return players;
+        }
+
+        private static string GetRandomPosition()
+        {
+            string[] positions = { "PG", "SG", "SF", "PF", "C" };
+            return positions[rng.Next(positions.Length)];
         }
     }
 }

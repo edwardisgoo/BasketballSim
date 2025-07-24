@@ -35,7 +35,7 @@ namespace BasketballSim.Views
             var first = sortedPlayers.FirstOrDefault();
             if (first != null)
             {
-                SelectedPlayerText.Text = $"{first.FullName} - {first.Nationality} | Age: {first.Age} | Overall: {first.Overall}";
+                SelectedPlayerText.Text = $"{first.FullName} - {first.Nationality} | Age: {first.Age} | Pos: {first.Position} | Overall: {first.Overall}";
             }
         }
 
@@ -44,7 +44,7 @@ namespace BasketballSim.Views
             var selected = PlayerListBox.SelectedItem as Player;
             if (selected != null)
             {
-                SelectedPlayerText.Text = $"{selected.FullName} - {selected.Nationality} | Age: {selected.Age} | Overall: {selected.Overall}";
+                SelectedPlayerText.Text = $"{selected.FullName} - {selected.Nationality} | Age: {selected.Age} | Pos: {selected.Position} | Overall: {selected.Overall}";
             }
         }
 

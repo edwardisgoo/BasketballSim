@@ -34,7 +34,7 @@ namespace BasketballSim.Views
 
         private static string FormatPlayer(Player player)
         {
-            return $"{player.FullName} - {player.Nationality} | Age: {player.Age} | Overall: {player.Overall}";
+            return $"{player.FullName} - {player.Nationality} | Age: {player.Age} | Pos: {player.Position} | Overall: {player.Overall}";
         }
 
         private void UpdatePickInfo()
