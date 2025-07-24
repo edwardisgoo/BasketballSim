@@ -1,0 +1,24 @@
+﻿<Window x:Class="BasketballSim.Views.DraftSummary"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        WindowStyle="None"
+        WindowState="Maximized"
+        ResizeMode="NoResize"
+        Title="Draft Summary">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="2*" />
+        </Grid.RowDefinitions>
+        <Border Grid.Row="0" Background="#FFEFEFEF" Padding="20">
+            <StackPanel>
+                <TextBlock Text="Draft Completed!" FontSize="24" FontWeight="Bold" />
+                <TextBlock x:Name="SelectedPlayerText" FontSize="18" Margin="0,10,0,0" />
+            </StackPanel>
+        </Border>
+        <DockPanel Grid.Row="1" Margin="10">
+            <Button Content="Advance" DockPanel.Dock="Bottom" Margin="0,10,0,0" Width="150" Height="30" Click="Advance_Click" />
+            <ListBox x:Name="PlayerListBox" SelectionChanged="PlayerListBox_SelectionChanged" />
+        </DockPanel>
+    </Grid>
+</Window>

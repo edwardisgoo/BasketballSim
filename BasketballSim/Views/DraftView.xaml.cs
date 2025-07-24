@@ -53,11 +53,8 @@ namespace BasketballSim.Views
 
         private void DraftManager_DraftCompleted(object? sender, System.EventArgs e)
         {
-            var teams = draftManager.GetTeams();
-            FranchiseContext.CurrentLeague = teams;
-            FranchiseContext.CurrentTeamIndex = 0;
-            var teamView = new TeamView(teams[0]);
-            teamView.Show();
+            var summary = new DraftSummary(draftManager.DraftHistory.ToList());
+            summary.Show();
             this.Close();
         }
 
@@ -73,8 +70,41 @@ namespace BasketballSim.Views
             if (player != null)
             {
                 draftManager.PickPlayer(player);
+                AutoDraftCpuPicks();
                 LoadPlayers();
             }
+        }
+
+        private void AutoDraftCpuPicks()
+        {
+            while (!draftManager.IsDraftComplete && draftManager.CurrentTeamIndex != 0)
+            {
+                var cpuPlayer = ChooseCpuPlayer(draftManager.CurrentTeamIndex);
+                draftManager.PickPlayer(cpuPlayer);
+            }
+        }
+
+        private Player ChooseCpuPlayer(int teamIndex)
+        {
+            var roster = draftManager.GetTeamRoster(teamIndex);
+            int round = (draftManager.CurrentPickNumber - 1) / 30 + 1;
+            var bestAvailable = draftManager.AvailablePlayers.OrderByDescending(p => p.Overall);
+
+            if (round <= 5)
+                return bestAvailable.First();
+
+            string[] positions = { "PG", "SG", "SF", "PF", "C" };
+            var needed = positions.Where(pos => roster.Count(p => p.Position == pos) < 2).ToList();
+            if (needed.Count > 0)
+            {
+                var pick = draftManager.AvailablePlayers
+                    .Where(p => needed.Contains(p.Position))
+                    .OrderByDescending(p => p.Overall)
+                    .FirstOrDefault();
+                if (pick != null)
+                    return pick;
+            }
+            return bestAvailable.First();
         }
     }
 }

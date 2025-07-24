@@ -14,6 +14,7 @@ namespace BasketballSim.Logic
         public event EventHandler? DraftCompleted;
         private readonly List<Player> availablePlayers;
         private readonly List<List<Player>> teamRosters = new();
+        private readonly List<DraftPick> draftHistory = new();
         private int currentPick;
         private int currentTeamIndex;
         private int direction = 1; // 1 for forward, -1 for reverse
@@ -61,13 +62,17 @@ namespace BasketballSim.Logic
             return teams;
         }
 
+        public IReadOnlyList<DraftPick> DraftHistory => draftHistory;
+
         public void PickPlayer(Player player)
         {
             if (player == null) throw new ArgumentNullException(nameof(player));
             if (!availablePlayers.Remove(player))
                 throw new InvalidOperationException("Player not in available pool");
 
+            int pickNumber = currentPick + 1;
             teamRosters[currentTeamIndex].Add(player);
+            draftHistory.Add(new DraftPick(player, currentTeamIndex, pickNumber));
             if (availablePlayers.Count == 0)
             {
                 DraftCompleted?.Invoke(this, EventArgs.Empty);
