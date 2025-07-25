@@ -10,12 +10,23 @@ namespace BasketballSim.Views
     public partial class TeamView : Window
     {
         private Team currentTeam;
+        private readonly DraftManager? draftManager;
+        private int teamIndex;
         private List<Player> players = new();
         private string sortColumn = "Overall";
         private bool sortAscending = false;
 
         public TeamView() : this(FranchiseContext.GetCurrentTeam())
         {
+        }
+
+        public TeamView(DraftManager manager)
+        {
+            draftManager = manager;
+            teamIndex = manager.CurrentTeamIndex;
+            InitializeComponent();
+            this.PreviewKeyDown += TeamView_KeyDown;
+            LoadTeamFromDraft();
         }
 
         public TeamView(Team team)
@@ -71,6 +82,14 @@ namespace BasketballSim.Views
             }
         }
 
+        private void LoadTeamFromDraft()
+        {
+            if (draftManager == null) return;
+            var roster = draftManager.GetTeamRoster(teamIndex);
+            var team = new Team($"Team {teamIndex + 1}", roster.ToList());
+            LoadTeam(team);
+        }
+
         private void PlayerListView_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             var selected = PlayerListView.SelectedItem as Player;
@@ -106,14 +125,32 @@ namespace BasketballSim.Views
 
         private void NextTeam_Click(object sender, RoutedEventArgs e)
         {
-            FranchiseContext.NextTeam();
-            LoadTeam(FranchiseContext.GetCurrentTeam());
+            if (draftManager != null)
+            {
+                var count = draftManager.GetTeams().Count;
+                teamIndex = (teamIndex + 1) % count;
+                LoadTeamFromDraft();
+            }
+            else
+            {
+                FranchiseContext.NextTeam();
+                LoadTeam(FranchiseContext.GetCurrentTeam());
+            }
         }
 
         private void PreviousTeam_Click(object sender, RoutedEventArgs e)
         {
-            FranchiseContext.PreviousTeam();
-            LoadTeam(FranchiseContext.GetCurrentTeam());
+            if (draftManager != null)
+            {
+                var count = draftManager.GetTeams().Count;
+                teamIndex = (teamIndex - 1 + count) % count;
+                LoadTeamFromDraft();
+            }
+            else
+            {
+                FranchiseContext.PreviousTeam();
+                LoadTeam(FranchiseContext.GetCurrentTeam());
+            }
         }
 
         private void TeamView_KeyDown(object sender, KeyEventArgs e)
@@ -128,13 +165,31 @@ namespace BasketballSim.Views
             }
             else if (e.Key == Key.Right)
             {
-                FranchiseContext.NextTeam();
-                LoadTeam(FranchiseContext.GetCurrentTeam());
+                if (draftManager != null)
+                {
+                    var count = draftManager.GetTeams().Count;
+                    teamIndex = (teamIndex + 1) % count;
+                    LoadTeamFromDraft();
+                }
+                else
+                {
+                    FranchiseContext.NextTeam();
+                    LoadTeam(FranchiseContext.GetCurrentTeam());
+                }
             }
             else if (e.Key == Key.Left)
             {
-                FranchiseContext.PreviousTeam();
-                LoadTeam(FranchiseContext.GetCurrentTeam());
+                if (draftManager != null)
+                {
+                    var count = draftManager.GetTeams().Count;
+                    teamIndex = (teamIndex - 1 + count) % count;
+                    LoadTeamFromDraft();
+                }
+                else
+                {
+                    FranchiseContext.PreviousTeam();
+                    LoadTeam(FranchiseContext.GetCurrentTeam());
+                }
             }
         }
 

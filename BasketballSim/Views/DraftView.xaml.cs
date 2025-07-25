@@ -110,7 +110,7 @@ namespace BasketballSim.Views
 
         private void ViewTeamButton_Click(object sender, RoutedEventArgs e)
         {
-            var teamView = new TeamView(draftManager.CurrentTeam);
+            var teamView = new TeamView(draftManager);
             teamView.Show();
         }
 
