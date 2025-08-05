@@ -122,19 +122,8 @@ namespace BasketballSim.Views
         private void ShowStandings()
         {
             var standings = simulator.GetStandings();
-            var west = standings.Where(t => t.TeamIndex < 15).ToList();
-            var east = standings.Where(t => t.TeamIndex >= 15).ToList();
-            string msg = "West\n";
-            for (int i = 0; i < west.Count; i++)
-            {
-                msg += $"{i + 1}. Team {west[i].TeamIndex + 1} {west[i].Wins}-{82 - west[i].Wins}\n";
-            }
-            msg += "\nEast\n";
-            for (int i = 0; i < east.Count; i++)
-            {
-                msg += $"{i + 1}. Team {east[i].TeamIndex + 1} {east[i].Wins}-{82 - east[i].Wins}\n";
-            }
-            MessageBox.Show(msg, "Season Complete");
+            var sv = new StandingsView(standings);
+            sv.Show();
         }
     }
 }
