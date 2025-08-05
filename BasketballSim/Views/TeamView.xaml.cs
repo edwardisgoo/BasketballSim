@@ -195,7 +195,16 @@ namespace BasketballSim.Views
 
         private void BackToDraft_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            if (draftManager != null)
+            {
+                this.Close();
+            }
+            else
+            {
+                var season = new SeasonView();
+                season.Show();
+                this.Close();
+            }
         }
     }
 }
