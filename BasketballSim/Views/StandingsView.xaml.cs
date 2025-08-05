@@ -33,7 +33,7 @@ namespace BasketballSim.Views
 
         private void ViewPlayoffs_Click(object sender, RoutedEventArgs e)
         {
-            var bracket = new PlayoffBracketView();
+            var bracket = new PlayoffView();
             bracket.Show();
         }
     }
