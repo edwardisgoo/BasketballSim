@@ -26,6 +26,8 @@ namespace BasketballSim.Views
             teamIndex = manager.CurrentTeamIndex;
             InitializeComponent();
             this.PreviewKeyDown += TeamView_KeyDown;
+            BackToDraftButton.Visibility = Visibility.Visible;
+            AdvanceToSeasonButton.Visibility = Visibility.Collapsed;
             LoadTeamFromDraft();
         }
 
@@ -33,6 +35,8 @@ namespace BasketballSim.Views
         {
             InitializeComponent();
             this.PreviewKeyDown += TeamView_KeyDown;
+            BackToDraftButton.Visibility = Visibility.Collapsed;
+            AdvanceToSeasonButton.Visibility = Visibility.Visible;
             LoadTeam(team);
         }
 
@@ -199,12 +203,13 @@ namespace BasketballSim.Views
             {
                 this.Close();
             }
-            else
-            {
-                var season = new SeasonView();
-                season.Show();
-                this.Close();
-            }
+        }
+
+        private void AdvanceToSeason_Click(object sender, RoutedEventArgs e)
+        {
+            var season = new SeasonView();
+            season.Show();
+            this.Close();
         }
     }
 }

@@ -23,8 +23,12 @@
 
         <!-- Bottom: Player List -->
         <DockPanel Grid.Row="1" Margin="10">
-            <Button Content="Back to Draft" DockPanel.Dock="Bottom" Margin="0,10,0,0"
-                    Click="BackToDraft_Click" Width="150" Height="30"/>
+            <StackPanel DockPanel.Dock="Bottom" Margin="0,10,0,0">
+                <Button x:Name="BackToDraftButton" Content="Back to Draft"
+                        Click="BackToDraft_Click" Width="150" Height="30" Visibility="Collapsed"/>
+                <Button x:Name="AdvanceToSeasonButton" Content="Advance To Season"
+                        Click="AdvanceToSeason_Click" Width="150" Height="30" Visibility="Collapsed"/>
+            </StackPanel>
             <ListView x:Name="PlayerListView"
                       SelectionChanged="PlayerListView_SelectionChanged"
                       GridViewColumnHeader.Click="PlayerHeader_Click"
