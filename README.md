@@ -2,7 +2,7 @@
 
 A work-in-progress basketball franchise simulation game built with C# and WPF. Run a draft, simulate a full 82-game season, and see your team through the playoffs.
 
-> **Note:** This project is unfinished. Expect rough edges, missing features, and at least one broken thing in the playoffs.
+> **Note:** This project is unfinished. Expect rough edges, missing features, and a pretty broken playoffs.
 
 ## What It Does
 
@@ -61,7 +61,7 @@ BasketballSim/
 
 ## Known Issues
 
-- Playoff bracket progression has bugs (last commit message: "broken playoffs")
+- Playoff bracket progression has bugs
 - Game simulation is purely random — player ratings don't influence game scores yet
 - No save/load; everything resets when you close the app
 - Teams are named "Team 1" through "Team 30"
