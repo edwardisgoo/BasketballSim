@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using BasketballSim.Logic;
@@ -19,7 +19,7 @@ namespace BasketballSim.Views
 
         private void LoadPlayers()
         {
-            var display = picks.Select(p => $"{p.PickNumber}. {p.Player.ShortName} - Team {p.TeamIndex + 1}").ToList();
+            var display = picks.Select(p => $"{p.PickNumber,3}. {p.Player.ShortName,-20} — {TeamNameFor(p.TeamIndex)}").ToList();
             PlayerListBox.ItemsSource = display;
             if (picks.Count > 0)
             {
@@ -32,16 +32,23 @@ namespace BasketballSim.Views
         private static string FormatPick(DraftPick pick)
         {
             var pl = pick.Player;
-            return $"{pick.PickNumber}. {pl.FullName} - Team {pick.TeamIndex + 1} | Age: {pl.Age} | Pos: {pl.Position} | Overall: {pl.Overall}";
+            return $"{pick.PickNumber}. {pl.FullName}  —  {TeamNameFor(pick.TeamIndex)}\n" +
+                   $"Age {pl.Age}  |  {pl.Position}  |  Ovr {pl.Overall}\n" +
+                   $"Spd {pl.Speed}  Sht {pl.Shooting}  3PT {pl.ThreePoint}  " +
+                   $"Def {pl.Defense}  Reb {pl.Rebounding}  Pas {pl.Passing}  " +
+                   $"Int {pl.Interior}  IQ {pl.IQ}";
         }
+
+        private static string TeamNameFor(int index) =>
+            index >= 0 && index < FranchiseGenerator.TeamNames.Length
+                ? FranchiseGenerator.TeamNames[index]
+                : $"Team {index + 1}";
 
         private void PlayerListBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             int idx = PlayerListBox.SelectedIndex;
             if (idx >= 0 && idx < picks.Count)
-            {
                 SelectedPlayerText.Text = FormatPick(picks[idx]);
-            }
         }
 
         private void Advance_Click(object sender, RoutedEventArgs e)
