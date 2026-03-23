@@ -1,46 +1,81 @@
-﻿<Window x:Class="BasketballSim.Views.TeamView"
+<Window x:Class="BasketballSim.Views.TeamView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         WindowStyle="None"
         WindowState="Maximized"
         ResizeMode="NoResize"
         Title="Team Roster">
-    <Grid>
+    <Grid Background="#1a1a2e">
         <Grid.RowDefinitions>
-            <RowDefinition Height="1*" />
-            <!-- Top 1/3 -->
-            <RowDefinition Height="2*" />
-            <!-- Bottom 2/3 -->
+            <RowDefinition Height="Auto"/>  <!-- header -->
+            <RowDefinition Height="*"/>     <!-- roster list -->
+            <RowDefinition Height="Auto"/>  <!-- detail panel -->
+            <RowDefinition Height="Auto"/>  <!-- buttons -->
         </Grid.RowDefinitions>
 
-        <!-- Top: Selected Player Summary -->
-        <Border Grid.Row="0" Background="#FFEFEFEF" Padding="20">
+        <!-- Header -->
+        <Border Grid.Row="0" Background="#16213e" Padding="20,14">
             <StackPanel>
-                <TextBlock x:Name="TeamNameText" FontSize="24" FontWeight="Bold" />
-                <TextBlock x:Name="SelectedPlayerText" FontSize="18" Margin="0,10,0,0"/>
+                <TextBlock x:Name="TeamNameText" FontSize="22" FontWeight="Bold"
+                           Foreground="#e2b714"/>
+                <TextBlock Text="← → arrow keys to browse teams   ESC = quit"
+                           FontSize="12" Foreground="#666666" Margin="0,3,0,0"/>
             </StackPanel>
         </Border>
 
-        <!-- Bottom: Player List -->
-        <DockPanel Grid.Row="1" Margin="10">
-            <StackPanel DockPanel.Dock="Bottom" Margin="0,10,0,0">
-                <Button x:Name="BackToDraftButton" Content="Back to Draft"
-                        Click="BackToDraft_Click" Width="150" Height="30" Visibility="Collapsed"/>
-                <Button x:Name="AdvanceToSeasonButton" Content="Advance To Season"
-                        Click="AdvanceToSeason_Click" Width="150" Height="30" Visibility="Collapsed"/>
-            </StackPanel>
-            <ListView x:Name="PlayerListView"
-                      SelectionChanged="PlayerListView_SelectionChanged"
-                      GridViewColumnHeader.Click="PlayerHeader_Click"
-                      Margin="0">
-                <ListView.View>
-                    <GridView>
-                        <GridViewColumn Header="Name" DisplayMemberBinding="{Binding ShortName}" Width="150" />
-                        <GridViewColumn Header="Pos" DisplayMemberBinding="{Binding Position}" Width="60" />
-                        <GridViewColumn Header="Ovr" DisplayMemberBinding="{Binding Overall}" Width="60" />
-                    </GridView>
-                </ListView.View>
-            </ListView>
-        </DockPanel>
+        <!-- Player list with attributes -->
+        <ListView x:Name="PlayerListView" Grid.Row="1"
+                  SelectionChanged="PlayerListView_SelectionChanged"
+                  GridViewColumnHeader.Click="PlayerHeader_Click"
+                  Background="#0f3460" Foreground="White"
+                  BorderThickness="0" Margin="0">
+            <ListView.Resources>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="Foreground" Value="White"/>
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="FontFamily" Value="Consolas"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="#e2b714"/>
+                            <Setter Property="Foreground" Value="#1a1a2e"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ListView.Resources>
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Name"     DisplayMemberBinding="{Binding ShortName}"  Width="150"/>
+                    <GridViewColumn Header="Pos"      DisplayMemberBinding="{Binding Position}"   Width="45"/>
+                    <GridViewColumn Header="Ovr"      DisplayMemberBinding="{Binding Overall}"    Width="42"/>
+                    <GridViewColumn Header="Spd"      DisplayMemberBinding="{Binding Speed}"      Width="42"/>
+                    <GridViewColumn Header="Sht"      DisplayMemberBinding="{Binding Shooting}"   Width="42"/>
+                    <GridViewColumn Header="3PT"      DisplayMemberBinding="{Binding ThreePoint}" Width="42"/>
+                    <GridViewColumn Header="Def"      DisplayMemberBinding="{Binding Defense}"    Width="42"/>
+                    <GridViewColumn Header="Reb"      DisplayMemberBinding="{Binding Rebounding}" Width="42"/>
+                    <GridViewColumn Header="Pas"      DisplayMemberBinding="{Binding Passing}"    Width="42"/>
+                    <GridViewColumn Header="Int"      DisplayMemberBinding="{Binding Interior}"   Width="42"/>
+                    <GridViewColumn Header="IQ"       DisplayMemberBinding="{Binding IQ}"         Width="42"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+        <!-- Selected player detail -->
+        <Border Grid.Row="2" Background="#16213e" Padding="20,12">
+            <TextBlock x:Name="SelectedPlayerText" FontSize="14"
+                       Foreground="White" TextWrapping="Wrap"/>
+        </Border>
+
+        <!-- Buttons -->
+        <StackPanel Grid.Row="3" Orientation="Horizontal"
+                    HorizontalAlignment="Center" Margin="0,10,0,14">
+            <Button x:Name="BackToDraftButton" Content="← Back to Draft"
+                    Click="BackToDraft_Click" Width="150" Height="34"
+                    Margin="8,0" Visibility="Collapsed"
+                    Background="#333355" Foreground="White"/>
+            <Button x:Name="AdvanceToSeasonButton" Content="▶ Advance to Season"
+                    Click="AdvanceToSeason_Click" Width="180" Height="34"
+                    Margin="8,0" Visibility="Collapsed"
+                    Background="#e2b714" Foreground="#1a1a2e" FontWeight="Bold"/>
+        </StackPanel>
     </Grid>
 </Window>

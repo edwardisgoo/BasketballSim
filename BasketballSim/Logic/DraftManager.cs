@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using BasketballSim.Models;
@@ -6,18 +6,18 @@ using BasketballSim.Models;
 namespace BasketballSim.Logic
 {
     /// <summary>
-    /// Manages the draft process for a league.
-    /// Keeps track of available players, team rosters and pick order.
+    /// Manages the serpentine draft process for a league.
     /// </summary>
     public class DraftManager
     {
         public event EventHandler? DraftCompleted;
+
         private readonly List<Player> availablePlayers;
         private readonly List<List<Player>> teamRosters = new();
         private readonly List<DraftPick> draftHistory = new();
         private int currentPick;
         private int currentTeamIndex;
-        private int direction = 1; // 1 for forward, -1 for reverse
+        private int direction = 1; // 1 = forward, -1 = reverse (serpentine)
 
         public bool IsDraftComplete => availablePlayers.Count == 0;
 
@@ -25,25 +25,17 @@ namespace BasketballSim.Logic
         {
             availablePlayers = players.ToList();
             for (int i = 0; i < 30; i++)
-            {
                 teamRosters.Add(new List<Player>());
-            }
         }
 
         public IReadOnlyList<Player> AvailablePlayers => availablePlayers;
-        public int CurrentPickNumber => currentPick + 1;
-        public int CurrentTeamIndex => currentTeamIndex;
+        public int CurrentPickNumber  => currentPick + 1;
+        public int CurrentTeamIndex   => currentTeamIndex;
 
-        /// <summary>
-        /// Gets the roster of the team currently on the clock.
-        /// </summary>
         public IReadOnlyList<Player> CurrentTeamRoster => teamRosters[currentTeamIndex];
 
-        /// <summary>
-        /// Convenience property returning a <see cref="Team"/> instance for the
-        /// team currently drafting.
-        /// </summary>
-        public Team CurrentTeam => new Team($"Team {currentTeamIndex + 1}", teamRosters[currentTeamIndex]);
+        public Team CurrentTeam =>
+            new Team(TeamNameFor(currentTeamIndex), teamRosters[currentTeamIndex]);
 
         public IReadOnlyList<Player> GetTeamRoster(int teamIndex)
         {
@@ -56,9 +48,7 @@ namespace BasketballSim.Logic
         {
             var teams = new List<Team>();
             for (int i = 0; i < teamRosters.Count; i++)
-            {
-                teams.Add(new Team($"Team {i + 1}", teamRosters[i].ToList()));
-            }
+                teams.Add(new Team(TeamNameFor(i), teamRosters[i].ToList()));
             return teams;
         }
 
@@ -73,20 +63,13 @@ namespace BasketballSim.Logic
             int pickNumber = currentPick + 1;
             teamRosters[currentTeamIndex].Add(player);
             draftHistory.Add(new DraftPick(player, currentTeamIndex, pickNumber));
+
             if (availablePlayers.Count == 0)
-            {
                 DraftCompleted?.Invoke(this, EventArgs.Empty);
-            }
             else
-            {
                 AdvancePick();
-            }
         }
 
-        /// <summary>
-        /// Advance to the next pick in the serpentine order.
-        /// Can be called manually to skip a pick.
-        /// </summary>
         public void AdvancePick()
         {
             currentPick++;
@@ -95,7 +78,20 @@ namespace BasketballSim.Logic
                 direction = -1;
             else if (currentTeamIndex == 0 && direction == -1)
                 direction = 1;
-            else currentTeamIndex += direction;
+            else
+                currentTeamIndex += direction;
+        }
+
+        // ──────────────────────────────────────────────────────────────
+        // Helpers
+        // ──────────────────────────────────────────────────────────────
+
+        private static string TeamNameFor(int index)
+        {
+            // Prefer real team names from the generator; fall back if out of range
+            if (index >= 0 && index < FranchiseGenerator.TeamNames.Length)
+                return FranchiseGenerator.TeamNames[index];
+            return $"Team {index + 1}";
         }
     }
 }

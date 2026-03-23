@@ -1,47 +1,81 @@
-﻿<Window x:Class="BasketballSim.Views.DraftView"
+<Window x:Class="BasketballSim.Views.DraftView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         WindowStyle="None"
         WindowState="Maximized"
         ResizeMode="NoResize"
         Title="Draft">
-    <Grid>
+    <Grid Background="#1a1a2e">
         <Grid.RowDefinitions>
-            <RowDefinition Height="1*" />
-            <!-- Top 1/3 for selected player info -->
-            <RowDefinition Height="2*" />
-            <!-- Bottom 2/3 for available players list -->
+            <RowDefinition Height="Auto"/>   <!-- pick info header -->
+            <RowDefinition Height="*"/>      <!-- available players list -->
+            <RowDefinition Height="Auto"/>   <!-- selected player detail -->
+            <RowDefinition Height="Auto"/>   <!-- buttons -->
         </Grid.RowDefinitions>
 
-        <!-- Top: Current pick + highlighted player details -->
-        <Border Grid.Row="0" Background="#FFEFEFEF" Padding="20">
+        <!-- Pick info -->
+        <Border Grid.Row="0" Background="#16213e" Padding="20,14">
             <StackPanel>
-                <TextBlock x:Name="PickInfoText" FontSize="24" FontWeight="Bold"/>
-                <TextBlock x:Name="SelectedPlayerText" FontSize="18" Margin="0,10,0,0"/>
+                <TextBlock x:Name="PickInfoText" FontSize="22" FontWeight="Bold"
+                           Foreground="#e2b714"/>
+                <TextBlock Text="Select a player and click Draft Player (or press D)"
+                           FontSize="12" Foreground="#666666" Margin="0,3,0,0"/>
             </StackPanel>
         </Border>
 
-        <!-- Bottom: Player list -->
-        <DockPanel Grid.Row="1" Margin="10">
-            <Button x:Name="DraftPlayerButton" Content="Draft Player"
-                    DockPanel.Dock="Bottom" Margin="0,10,0,0"
-                    Width="150" Height="30"
-                    Click="DraftPlayerButton_Click" />
-            <Button x:Name="ViewTeamButton" Content="View Current Team"
-                    DockPanel.Dock="Bottom" Margin="0,10,0,0"
-                    Width="150" Height="30"
-                    Click="ViewTeamButton_Click" />
-            <ListView x:Name="AvailablePlayersListView"
-                      SelectionChanged="AvailablePlayersListView_SelectionChanged"
-                      GridViewColumnHeader.Click="AvailablePlayersHeader_Click">
-                <ListView.View>
-                    <GridView>
-                        <GridViewColumn Header="Name" DisplayMemberBinding="{Binding ShortName}" Width="150" />
-                        <GridViewColumn Header="Pos" DisplayMemberBinding="{Binding Position}" Width="60" />
-                        <GridViewColumn Header="Ovr" DisplayMemberBinding="{Binding Overall}" Width="60" />
-                    </GridView>
-                </ListView.View>
-            </ListView>
-        </DockPanel>
+        <!-- Available players list with attributes -->
+        <ListView x:Name="AvailablePlayersListView" Grid.Row="1"
+                  SelectionChanged="AvailablePlayersListView_SelectionChanged"
+                  GridViewColumnHeader.Click="AvailablePlayersHeader_Click"
+                  Background="#0f3460" Foreground="White"
+                  BorderThickness="0">
+            <ListView.Resources>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="Foreground" Value="White"/>
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="FontFamily" Value="Consolas"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="#e2b714"/>
+                            <Setter Property="Foreground" Value="#1a1a2e"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ListView.Resources>
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Name"     DisplayMemberBinding="{Binding ShortName}"  Width="150"/>
+                    <GridViewColumn Header="Pos"      DisplayMemberBinding="{Binding Position}"   Width="45"/>
+                    <GridViewColumn Header="Ovr"      DisplayMemberBinding="{Binding Overall}"    Width="42"/>
+                    <GridViewColumn Header="Spd"      DisplayMemberBinding="{Binding Speed}"      Width="42"/>
+                    <GridViewColumn Header="Sht"      DisplayMemberBinding="{Binding Shooting}"   Width="42"/>
+                    <GridViewColumn Header="3PT"      DisplayMemberBinding="{Binding ThreePoint}" Width="42"/>
+                    <GridViewColumn Header="Def"      DisplayMemberBinding="{Binding Defense}"    Width="42"/>
+                    <GridViewColumn Header="Reb"      DisplayMemberBinding="{Binding Rebounding}" Width="42"/>
+                    <GridViewColumn Header="Pas"      DisplayMemberBinding="{Binding Passing}"    Width="42"/>
+                    <GridViewColumn Header="Int"      DisplayMemberBinding="{Binding Interior}"   Width="42"/>
+                    <GridViewColumn Header="IQ"       DisplayMemberBinding="{Binding IQ}"         Width="42"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+        <!-- Selected player detail -->
+        <Border Grid.Row="2" Background="#16213e" Padding="20,12">
+            <TextBlock x:Name="SelectedPlayerText" FontSize="13"
+                       Foreground="White" TextWrapping="Wrap"/>
+        </Border>
+
+        <!-- Buttons -->
+        <StackPanel Grid.Row="3" Orientation="Horizontal"
+                    HorizontalAlignment="Center" Margin="0,10,0,14">
+            <Button x:Name="DraftPlayerButton" Content="Draft Player (D)"
+                    Click="DraftPlayerButton_Click"
+                    Width="170" Height="36" Margin="8,0"
+                    Background="#e2b714" Foreground="#1a1a2e" FontWeight="Bold"/>
+            <Button x:Name="ViewTeamButton" Content="View My Team"
+                    Click="ViewTeamButton_Click"
+                    Width="150" Height="36" Margin="8,0"
+                    Background="#333355" Foreground="White"/>
+        </StackPanel>
     </Grid>
 </Window>
